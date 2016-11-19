@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.utils import shuffle
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Convolution2D, MaxPooling2D, Dropout
 from keras.layers import Dense, Activation, Flatten
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+import csv
+import matplotlib.pyplot as plt
 
 ## READ DATA
 df=pd.read_csv('data/training.csv')
@@ -62,11 +64,18 @@ optimizer = Adam(lr=0.001)
 model.compile(loss='mean_squared_error', optimizer=optimizer)
 
 ## TRAINING
-earlyStopping=EarlyStopping(monitor='val_loss', patience=1, min_delta=0)
-#filepath="model-{epoch:02d}-{val_loss:.6f}.h5"
+#earlyStopping=EarlyStopping(monitor='val_loss', patience=1, min_delta=0)
 filepath="model.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_los')
 
-model.fit(train_data, train_label, batch_size = 64, nb_epoch = 100,
-              validation_data = (val_data, val_label), callbacks=[earlyStopping, checkpoint],
+history = model.fit(train_data, train_label, batch_size = 64, nb_epoch = 15,
+              validation_data = (val_data, val_label), callbacks=[checkpoint],
               shuffle=True)
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'val'], loc='upper left')
+plt.savefig("result/learning.png")
