@@ -8,7 +8,7 @@ from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 ## READ DATA
-df=pd.read_csv('data/training.csv')
+df=pd.read_csv('data/test.csv')
 image=[]
 for im in df['Image']:
     image.append(np.fromstring(im, sep=' ')/255.0)
